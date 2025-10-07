@@ -12,8 +12,8 @@ const LayananScreen = () => {
          <ScrollView style={styles.scrollView}>
             <View style={styles.main}>
                <SectionHeader 
-                     title="Berita Desa" 
-                     subtitle="Informasi terbaru seputar kegiatan tentang desa" 
+                     title="Layanan Surat" 
+                     subtitle="Ajukan permohonan surat keterangan secara online" 
                   />
                <InputSurat />
             </View>

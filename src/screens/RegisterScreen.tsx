@@ -39,7 +39,7 @@ const RegisterScreen: React.FC<Props> = ({ navigation }) => {
   const [nik, setNik] = useState('');
   const [alamat, setAlamat] = useState('');
   const [noHp, setNoHp] = useState('');
-  const [photo, setPhoto] = useState<string | null>(null); // This is now a file URI
+  const [photo, setPhoto] = useState<string | null>(null);
 
   // Step 3: Selection fields
   const [jenisKelamin, setJenisKelamin] = useState('');

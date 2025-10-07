@@ -19,7 +19,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { API_URL } from '../config';
 import { useAuth } from '../context/AuthContext';
-import { R2_PUBLIC_URL } from '../config';
 
 const BeritaScreen = () => {
   const navigation =
