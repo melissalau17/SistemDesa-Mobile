@@ -24,8 +24,8 @@ const Form2: React.FC<Form2Props> = ({ onSubmit, onPrev, onDataChange, initialDa
         { label: '-- Pilihlah Jenis Surat --', value: '' },
         { label: 'Surat Keterangan tidak mampu', value: 'tidak_mampu' },
         { label: 'Surat Keterangan Pindah', value: 'pindah' },
-        { label: 'Surat Keterangan Kelahiran', value: 'kelahiran' },
-        { label: 'Surat Keterangan Kematian', value: 'kematian' },
+        { label: 'Surat Berkelakuan Baik', value: 'berkelakuan_baik' },
+        { label: 'Surat Keterangan Domisili', value: 'domisili' },
         { label: 'Surat Izin Mendirikan Bangunan (IMB) Sederhana', value: 'imb_sederhana' },
     ];
 
