@@ -16,10 +16,15 @@ import FAButton from '../components/FAButton';
 import ReportCard from '../components/ReportCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { API_URL, R2_PUBLIC_URL } from '../config';
+import { API_URL } from '../config';
 import { useFocusEffect } from '@react-navigation/native';
 import TambahDataModal from '../components/ModalLaporan';
 import { useAuth } from '../context/AuthContext';
+import io from 'socket.io-client';
+
+const socket = io('https://si-desa2.onrender.com', {
+  transports: ['websocket'],
+});
 
 const LaporanScreen = () => {
   const [laporans, setLaporans] = useState<any[]>([]);
@@ -48,12 +53,29 @@ const LaporanScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      const fetchData = async () => {
-        await fetchLaporans();
-      };
-      fetchData();
+      fetchLaporans();
     }, [fetchLaporans]),
   );
+
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Socket connected:', socket.id);
+    });
+
+    socket.on('laporanUpdate', updatedLaporan => {
+      console.log('Realtime update:', updatedLaporan);
+      setLaporans(prev =>
+        prev.map(l =>
+          l.laporan_id === updatedLaporan.laporan_id ? updatedLaporan : l,
+        ),
+      );
+    });
+
+    return () => {
+      socket.off('laporanUpdate');
+      socket.disconnect();
+    };
+  }, []);
 
   const handleSubmitLaporan = async (data: {
     tanggal: string;
@@ -107,7 +129,6 @@ const LaporanScreen = () => {
       });
 
       setModalVisible(false);
-      fetchLaporans();
       Alert.alert('Sukses', 'Laporan berhasil ditambahkan!');
     } catch (err: any) {
       console.error(
@@ -121,10 +142,10 @@ const LaporanScreen = () => {
   const handleSearch = (text: string) => {
     const query = text.toLowerCase().trim();
     if (!query) {
-      setLaporans(laporans);
+      fetchLaporans();
     } else {
-      setLaporans(
-        laporans.filter(l => l.keluhan.toLowerCase().includes(query)),
+      setLaporans(prev =>
+        prev.filter(l => l.keluhan.toLowerCase().includes(query)),
       );
     }
   };
@@ -137,13 +158,18 @@ const LaporanScreen = () => {
         return;
       }
 
+      setLaporans(prev =>
+        prev.map(l =>
+          l.laporan_id === laporanId ? { ...l, vote: l.vote + 1 } : l,
+        ),
+      );
+
       await axios.patch(
         `${API_URL}/api/reports/vote/${laporanId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } },
       );
 
-      fetchLaporans();
       Alert.alert('Sukses', 'Anda telah memberikan vote!');
     } catch (err: any) {
       console.error('Vote error:', err.response?.data || err.message);
@@ -165,6 +191,7 @@ const LaporanScreen = () => {
             subtitle="Laporkan masalah untuk tanggapan sigap dan cepat"
           />
           <SearchBar placeholder="Cari Laporan..." onSearch={handleSearch} />
+
           {laporans.length > 0 ? (
             laporans.map(laporan => (
               <ReportCard
@@ -185,6 +212,7 @@ const LaporanScreen = () => {
                   (v: { userId: number }) => v.userId === user?.user_id,
                 )}
                 buttonLabel="Vote"
+                votesCount={laporan.vote}
               />
             ))
           ) : (
@@ -212,11 +240,7 @@ const LaporanScreen = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f5f5f5' },
-  main: {
-    flex: 1,
-    flexGrow: 1,
-    padding: 15,
-  },
+  main: { flex: 1, flexGrow: 1, padding: 15 },
   scrollView: { flex: 1 },
   fabContainer: { position: 'absolute', bottom: 20, right: 100, zIndex: 10 },
   noDataContainer: {

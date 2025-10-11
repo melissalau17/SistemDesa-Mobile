@@ -14,6 +14,7 @@ interface ReportCardProps {
   location: string;
   locationLabel?: string;
   onVote: () => void;
+  votesCount?: number;
   buttonDisabled?: boolean;
   buttonLabel?: string;
 }
@@ -28,6 +29,7 @@ const ReportCard: React.FC<ReportCardProps> = ({
   location,
   locationLabel = 'Lokasi',
   onVote,
+  votesCount,
   buttonDisabled,
   buttonLabel = 'Vote',
 }) => {
@@ -65,6 +67,9 @@ const ReportCard: React.FC<ReportCardProps> = ({
           onPress={onVote}
           disabled={buttonDisabled}
         />
+        <Text style={{ marginTop: 6, fontWeight: '600', color: '#555' }}>
+            Jumlah Votes: {votesCount ?? 0}
+        </Text>
       </View>
     </>
   );
