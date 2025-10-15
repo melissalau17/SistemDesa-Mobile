@@ -1,12 +1,20 @@
+import React, { useLayoutEffect } from "react";
 import { View, Text, Image, StyleSheet, ScrollView, SafeAreaView } from "react-native";
-import { RouteProp, useRoute } from "@react-navigation/native";
+import { RouteProp, useRoute, useNavigation } from "@react-navigation/native";
 import { BeritaStackParamList } from "../navigation/BeritaStackNavigator";
 
 type DetailRouteProp = RouteProp<BeritaStackParamList, "DetailBerita">;
 
 const DetailBeritaScreen = () => {
     const route = useRoute<DetailRouteProp>();
+    const navigation = useNavigation();
     const { title, description, imageUrl, date, reporter, location } = route.params;
+
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            title: title.length > 25 ? title.slice(0, 25) + "..." : title, 
+        });
+    }, [navigation, title]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -18,8 +26,12 @@ const DetailBeritaScreen = () => {
                 <View style={styles.content}>
                     <Text style={styles.title}>{title}</Text>
                     <Text style={styles.date}>{date}</Text>
-                    <Text style={styles.label}>Lokasi: <Text style={styles.text}>{location}</Text></Text>
-                    <Text style={styles.label}>Pelapor: <Text style={styles.text}>{reporter}</Text></Text>
+                    <Text style={styles.label}>
+                        Lokasi: <Text style={styles.text}>{location}</Text>
+                    </Text>
+                    <Text style={styles.label}>
+                        Pelapor: <Text style={styles.text}>{reporter}</Text>
+                    </Text>
                     <Text style={styles.description}>{description}</Text>
                 </View>
             </ScrollView>

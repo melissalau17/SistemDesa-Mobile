@@ -17,6 +17,7 @@ interface ReportCardProps {
   votesCount?: number;
   buttonDisabled?: boolean;
   buttonLabel?: string;
+  showVotes?: boolean;
 }
 
 const ReportCard: React.FC<ReportCardProps> = ({
@@ -31,6 +32,7 @@ const ReportCard: React.FC<ReportCardProps> = ({
   onVote,
   votesCount,
   buttonDisabled,
+  showVotes,
   buttonLabel = 'Vote',
 }) => {
   const proxiedImageUrl =
@@ -67,9 +69,11 @@ const ReportCard: React.FC<ReportCardProps> = ({
           onPress={onVote}
           disabled={buttonDisabled}
         />
+        {showVotes && (
         <Text style={{ marginTop: 6, fontWeight: '600', color: '#555' }}>
             Jumlah Votes: {votesCount ?? 0}
         </Text>
+        )}
       </View>
     </>
   );

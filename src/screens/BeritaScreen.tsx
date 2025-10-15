@@ -115,8 +115,13 @@ const BeritaScreen = () => {
                   navigation.navigate('DetailBerita', {
                     title: berita.judul,
                     description: berita.kontent,
-                    imageUrl:
-                      berita.photo || 'https://via.placeholder.com/600x400',
+                    imageUrl: berita.photo_url
+                    ? 'https://si-desa2.onrender.com/api' +
+                        berita.photo_url.replace(
+                        'https://pub-d7852a03f254462ab8cdffdfeadb3c66.r2.dev',
+                        ''
+                        )
+                    : 'https://via.placeholder.com/600x400',
                     date: new Date(berita.tanggal).toLocaleDateString('id-ID', {
                       day: 'numeric',
                       month: 'long',
@@ -126,6 +131,7 @@ const BeritaScreen = () => {
                     location: berita.kategori,
                   })
                 }
+                showVotes={false}
               />
             ))
           ) : (
